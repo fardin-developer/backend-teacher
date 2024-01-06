@@ -28,7 +28,10 @@ app.get('/new', (req, res) => {
 })
 
 
-app.listen(4000, () => {
-  console.log("Server running at port 4000");
+const port = process.env.PORT || 4000;
+
+// Listen on `port` and 0.0.0.0
+app.listen(port, "0.0.0.0", function () {
+  console.log("server running at 4000");
 });
 
