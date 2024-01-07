@@ -8,6 +8,7 @@ const userRoute = require('./routes/user');
 const salary = require('./routes/slary')
 const createUser = require('./routes/createUer');
 const netAttendence = require('./routes/netAttendeces')
+const upgradeSalary = require('./routes/upgradeSalary')
 
 connectDB();
 
@@ -21,7 +22,8 @@ app.use(bodyParser.json());
 app.use('/', userRoute)
 app.use('/', salary)
 app.use('/', createUser)
-app.use('/', netAttendence)
+app.use('/', netAttendence);
+app.use('/',upgradeSalary)
 
 app.get('/new', (req, res) => {
   res.send("hello")
