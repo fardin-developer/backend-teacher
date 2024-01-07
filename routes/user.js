@@ -32,7 +32,7 @@ router.post('/submit', (req, res) => {
         if (!existingAttendance) {
           const newAttendence = new Attendance({
             user: user._id,
-            name:user.name,
+            name: user.name,
             date: new Date(),
             status: 'present'
           })
@@ -59,7 +59,10 @@ router.post('/submit', (req, res) => {
         }
       } else {
         console.log('user not found');
-        res.json({ user: "user not found" })
+        res.status(404).json({
+          user: "user not found",
+          status: "noUser"
+        })
       }
       return user;
     } catch (error) {
