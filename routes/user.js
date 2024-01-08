@@ -8,6 +8,29 @@ router.get('/', (req, res) => {
   res.send('hello');
 });
 
+router.get('/users', async (req, res) => {
+  const users = await User.find();
+  const allUsers = [];
+
+  for (let i = 0; i < users.length; i++) {
+    allUsers.push(
+      {  id:i,
+        name: users[i].name,
+        cost:users[i].baseSalary,
+        phone:users[i].phone,
+        date:users[i].dateOfJoin,
+      }
+    )
+  }
+
+  console.log(allUsers);
+
+  res.json({
+    users: allUsers, 
+  });
+});
+
+
 
 router.post('/submit', (req, res) => {
   const location = {}
