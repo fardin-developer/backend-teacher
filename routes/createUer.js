@@ -26,7 +26,12 @@ router.post('/create-user',(req,res)=>{
                     baseSalary:baseSalary
                   })       
                   user.save().then(() => {
-                    console.log("user saved");
+                    // console.log("user saved");
+                    res.json({ 
+                      message: "user Creayed succefully",
+                      message1: "Added a new member",
+      
+                   })
                   })
             }
                   
