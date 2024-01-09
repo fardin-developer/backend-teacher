@@ -29,7 +29,7 @@ router.post('/create-user', (req, res) => {
             // console.log("user saved");
             res.json({
               status: 200,
-              message: "User Created succefully",
+              message: "User Created successfully",
               message1: "A new member is added in your stuff",
 
             })
