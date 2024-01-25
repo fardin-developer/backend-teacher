@@ -49,10 +49,10 @@ router.post('/submit', (req, res) => {
     const lastTime = new Date();
     lastTime.setHours(14, 10, 0, 0);
   
-    if (currentDate > targetTime && currentDate < lastTime) {
+    if (currentDate > targetTime) {
       const timeDifference = currentDate - targetTime;
       const minDifference = timeDifference / (1000 * 60);
-      console.log(minDifference);
+      console.log("lateEntryInMinutes"+minDifference);
   
       return minDifference;
     } else {
