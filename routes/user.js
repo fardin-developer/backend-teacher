@@ -39,32 +39,36 @@ router.post('/submit', (req, res) => {
   location.longitude = req.body.longitude;
   location.name = req.body.name;
 
-  function getMinDifference() {
+  function calculateLateEntryMinutes() {
     const currentDate = new Date();
-    const targetTime = new Date(currentDate);
-    targetTime.setHours(9, 0, 0, 0);
-    const lastTime = new Date(currentDate);
-    lastTime.setHours(14,0,0,0);
-    if (currentDate>targetTime && currentDate<lastTime) {
+    // currentDate.setHours(9, 45, 0, 0);
+  
+    const targetTime = new Date();
+    targetTime.setHours(8, 45, 0, 0);
+  
+    const lastTime = new Date();
+    lastTime.setHours(14, 10, 0, 0);
+  
+    if (currentDate > targetTime && currentDate < lastTime) {
       const timeDifference = currentDate - targetTime;
       const minDifference = timeDifference / (1000 * 60);
+      console.log(minDifference);
   
       return minDifference;
-    }else{
+    } else {
       return 0;
     }
-   
   }
 
   function calculateEarlyLeavingMinutes() {
-    const currentDate = new Date();
+    const currentDate = new Date() //.setHours(12, 30, 0, 0);
     const targetTime = new Date(currentDate);
-    targetTime.setHours(14, 0, 0, 0);
+    targetTime.setHours(14, 10, 0, 0);
 
     const startTime = new Date(currentDate);
     startTime.setHours(9, 0, 0, 0);
 
-    if (currentDate < targetTime && currentDate>startTime) {
+    if (currentDate < targetTime && currentDate > startTime) {
       const timeDifference = targetTime - currentDate;
       const minuteDifference = timeDifference / (1000 * 60);
 
@@ -74,11 +78,11 @@ router.post('/submit', (req, res) => {
     }
   }
 
-  const lateEntryInMinutes = getMinDifference();
-  console.log(`The hour difference between now and 9:00 AM today is: ${lateEntryInMinutes} hours.`);
+  const lateEntryInMinutes = calculateLateEntryMinutes();
+  // console.log(`The hour difference between now and 9:00 AM today is: ${lateEntryInMinutes} hours.`);
 
   const earlyLeavingMinutes = calculateEarlyLeavingMinutes();
-  console.log(`The difference between now and 2:00 PM is: ${earlyLeavingMinutes} minutes.`);
+  // console.log(`The difference between now and 2:00 PM is: ${earlyLeavingMinutes} minutes.`);
 
 
 
@@ -86,6 +90,7 @@ router.post('/submit', (req, res) => {
   const findUserByName = async (name) => {
     try {
       const user = await User.findOne({ name });
+
       if (user) {
         const today = new Date().setHours(0, 0, 0, 0);
 
@@ -95,10 +100,21 @@ router.post('/submit', (req, res) => {
           date: { $gte: today, $lt: today + 24 * 60 * 60 * 1000 },
         });
         if (!existingAttendance) {
+          // const currentDate = new Date();
+          // const targetTime = new Date(currentDate);
+          // targetTime.setHours(9, 45, 0, 0);
+
+          if (lateEntryInMinutes>60) {
+            return res.status(400).json({
+              status: 'fail',
+              message: 'You are too late',
+              data: "after 9:40 am and before 12:00 pm attendence is not allowed",
+            });
+          }
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
-            date: new Date(),
+            date: new Date().setHours(9, 30, 0, 0),
             status: 'inComplete',
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
@@ -119,19 +135,27 @@ router.post('/submit', (req, res) => {
           })
         } else {
           if (existingAttendance.morningStatus === true && existingAttendance.evengStatus === false) {
+            if (earlyLeavingMinutes>130) {
+              res.status(400).json({
+                status: 'fail',
+                message: 'You are trying too early',
+                data: "after 9:40 am and before 12:00 pm attendence is not allowed",
+              });
+            }
             existingAttendance.evengStatus = true;
             // if (existingAttendance.lateMinutes ===0 && existingAttendance.earlydepartureMinute ===0) {
-              existingAttendance.status ="present"
+            existingAttendance.status = "present"
             // }
 
             if (earlyLeavingMinutes > 0) {
-              // Check if it's Saturday and time is more than 11:59 AM
+              // Check if it's Saturday and time is more than 11:59 AM;
+              let currentDate = new Date()
               if (currentDate.getDay() === 6 && currentDate.getHours() > 11 && currentDate.getMinutes() > 59) {
                 existingAttendance.earlydepartureMinute = 0;
-                console.log('It is Saturday and the time is more than 11:59 AM, so early departure minutes set to 0.');
+                // console.log('It is Saturday and the time is more than 11:59 AM, so early departure minutes set to 0.');
               } else {
                 existingAttendance.earlydepartureMinute = earlyLeavingMinutes;
-                console.log('Early departure minutes updated.');
+                // console.log('Early departure minutes updated.');
               }
             }
             existingAttendance.save()
