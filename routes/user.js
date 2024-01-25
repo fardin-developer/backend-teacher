@@ -114,7 +114,7 @@ router.post('/submit', (req, res) => {
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
-            date: new Date().setHours(9, 30, 0, 0),
+            date: new Date(),
             status: 'inComplete',
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
