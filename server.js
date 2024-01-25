@@ -8,7 +8,8 @@ const userRoute = require('./routes/user');
 const salary = require('./routes/slary')
 const createUser = require('./routes/createUer');
 const netAttendence = require('./routes/netAttendeces')
-const upgradeSalary = require('./routes/upgradeSalary')
+const upgradeSalary = require('./routes/upgradeSalary');
+require('dotenv').config();
 
 connectDB();
 
@@ -29,11 +30,11 @@ app.get('/new', (req, res) => {
   res.send("hello")
 })
 
-
 const port = process.env.PORT || 4000;
 
 // Listen on `port` and 0.0.0.0
 app.listen(port, "0.0.0.0", function () {
   console.log("server running at 4000");
+
 });
 
