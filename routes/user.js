@@ -108,7 +108,7 @@ router.post('/submit', (req, res) => {
             return res.status(400).json({
               status: 'fail',
               message: 'You are too late',
-              data: "after 9:40 am and before 12:00 pm attendence is not allowed",
+              data: "after 9:40 am moring attendance is not allowed",
             });
           }
           const newAttendence = new Attendance({
@@ -139,7 +139,7 @@ router.post('/submit', (req, res) => {
               res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
-                data: "after 9:40 am and before 12:00 pm attendence is not allowed",
+                data: "Before 12:00 pm attendence is not allowed",
               });
             }
             existingAttendance.evengStatus = true;
