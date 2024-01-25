@@ -188,8 +188,8 @@ router.post('/submit', (req, res) => {
         res.status(404).json({
           user: "user not found",
           status: "noUser",
-          message: 'User not found',
-          data: "Check your username",
+          message: 'User not found...',
+          data: "Check your username or be a member first",
         })
       }
       return user;
