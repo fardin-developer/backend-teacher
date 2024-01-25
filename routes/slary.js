@@ -4,42 +4,39 @@ const User = require('../model/userModel');
 const Attendance = require('../model/attendenceMode');
 router.get('/salary', (req, res) => {
 
-
-
-
-    // const baseslary =3000;
-    // let absent = 10;
-    // let sundayOfMonth 
-    // let daysalary = 3000/30;
-    // const finalSalary = baseslary - daysalary*absent
-    // res.send("salary reciept: "+ finalSalary)
 });
 
 router.post('/salary', async (req, res) => {
     let { month, year, name } = req.body;
     month = Number(month);
-    year = Number(year)
+    year = Number(year);
+    let attendances = {
+    }
 
     const sundaysCount = countSundaysInMonth(month, year);
-
-    // console.log(` Number of Sundays: ${sundaysCount} `);
-
-    // res.send(`Received month data. Number of Sundays: ${sundaysCount}`);
-
-    // console.log("name " + name);
 
     const salaryFind = async (name) => {
         let user = await User.findOne({ name: name });
         if (user) {
             const baseslary = user.baseSalary;
             let userID = user._id;
-            const numberOfPresentAttendances = await getNumberOfPresentAttendances(userID, month, year);
+             let result = await getNumberOfPresentAttendances(userID, month, year);
+             let numberOfPresentAttendances = result.length
             console.log("Number of present attendances:", numberOfPresentAttendances);
+            let lateTimeCount = 0
+
+            result.map((value)=>{
+             lateTimeCount = lateTimeCount+ value.earlydepartureMinute+value.lateMinutes
+            });
+            console.log(lateTimeCount);
             console.log(userID);
             let daysalary = baseslary / 30;
-            const finalSalary = numberOfPresentAttendances * daysalary + sundaysCount * daysalary
+
+            const lateTimeSalary = lateTimeCount *daysalary/(5*60);
+            console.log(lateTimeSalary);
+            const finalSalary = numberOfPresentAttendances * daysalary + sundaysCount * daysalary -lateTimeSalary;
             console.log("final " + finalSalary);
-            res.json({
+            res.status(200).json({
                 name: name,
                 month: month,
                 year: year,
@@ -47,6 +44,8 @@ router.post('/salary', async (req, res) => {
                 sundaysCount,
                 baseslary,
                 finalSalary: finalSalary,
+                lateTimeCount,
+                lateTimeSalary
 
             })
 
@@ -84,7 +83,8 @@ const getNumberOfPresentAttendances = async (userID, month, year) => {
             },
         });
 
-        return presentAttendances.length;
+
+        return presentAttendances;
     } catch (error) {
         console.error("Error fetching attendances:", error);
         throw error;

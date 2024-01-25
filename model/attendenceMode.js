@@ -17,10 +17,30 @@ const AttendanceSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['present', 'absent', 'late', 'excused'], 
+    enum: ['present', 'absent', 'late', 'inComplete'], 
     default: 'absent',
     required: true,
   },
+  morningStatus: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  evengStatus: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  lateMinutes:{
+    type:Number,
+    default: 0,
+    require:true
+  },
+  earlydepartureMinute:{
+    type:Number,
+    default: 0,
+    require:true
+  }
 });
 
 // AttendanceSchema.index({ user: 1, date: 1 }, { unique: true });

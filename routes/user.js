@@ -14,11 +14,12 @@ router.get('/users', async (req, res) => {
 
   for (let i = 0; i < users.length; i++) {
     allUsers.push(
-      {  id:i,
+      {
+        id: i,
         name: users[i].name,
-        cost:users[i].baseSalary,
-        phone:users[i].phone,
-        date:users[i].dateOfJoin,
+        cost: users[i].baseSalary,
+        phone: users[i].phone,
+        date: users[i].dateOfJoin,
       }
     )
   }
@@ -26,7 +27,7 @@ router.get('/users', async (req, res) => {
   console.log(allUsers);
 
   res.json({
-    users: allUsers, 
+    users: allUsers,
   });
 });
 
@@ -38,14 +39,55 @@ router.post('/submit', (req, res) => {
   location.longitude = req.body.longitude;
   location.name = req.body.name;
 
+  function getMinDifference() {
+    const currentDate = new Date();
+    const targetTime = new Date(currentDate);
+    targetTime.setHours(9, 0, 0, 0);
+    const lastTime = new Date(currentDate);
+    lastTime.setHours(14,0,0,0);
+    if (currentDate>targetTime && currentDate<lastTime) {
+      const timeDifference = currentDate - targetTime;
+      const minDifference = timeDifference / (1000 * 60);
+  
+      return minDifference;
+    }else{
+      return 0;
+    }
+   
+  }
+
+  function calculateEarlyLeavingMinutes() {
+    const currentDate = new Date();
+    const targetTime = new Date(currentDate);
+    targetTime.setHours(14, 0, 0, 0);
+
+    const startTime = new Date(currentDate);
+    startTime.setHours(9, 0, 0, 0);
+
+    if (currentDate < targetTime && currentDate>startTime) {
+      const timeDifference = targetTime - currentDate;
+      const minuteDifference = timeDifference / (1000 * 60);
+
+      return minuteDifference;
+    } else {
+      return 0; // If it's already 2:00 PM or later, return 0 minutes
+    }
+  }
+
+  const lateEntryInMinutes = getMinDifference();
+  console.log(`The hour difference between now and 9:00 AM today is: ${lateEntryInMinutes} hours.`);
+
+  const earlyLeavingMinutes = calculateEarlyLeavingMinutes();
+  console.log(`The difference between now and 2:00 PM is: ${earlyLeavingMinutes} minutes.`);
+
+
+
 
   const findUserByName = async (name) => {
     try {
       const user = await User.findOne({ name });
       if (user) {
-        // console.log('Found user:', user);
         const today = new Date().setHours(0, 0, 0, 0);
-        // console.log("datechecked " + today + 24 * 60 * 60 * 1000);
 
 
         const existingAttendance = await Attendance.findOne({
@@ -57,7 +99,9 @@ router.post('/submit', (req, res) => {
             user: user._id,
             name: user.name,
             date: new Date(),
-            status: 'present'
+            status: 'inComplete',
+            morningStatus: true,
+            lateMinutes: lateEntryInMinutes
           })
           newAttendence.save().then((saveAttendence) => {
             res.status(200).json({
@@ -74,11 +118,46 @@ router.post('/submit', (req, res) => {
             })
           })
         } else {
-          console.log('attendence exist');
-          res.status(409).json({
-            status: 'exist',
-            message: 'Attendance already exists',
-          });
+          if (existingAttendance.morningStatus === true && existingAttendance.evengStatus === false) {
+            existingAttendance.evengStatus = true;
+            // if (existingAttendance.lateMinutes ===0 && existingAttendance.earlydepartureMinute ===0) {
+              existingAttendance.status ="present"
+            // }
+
+            if (earlyLeavingMinutes > 0) {
+              // Check if it's Saturday and time is more than 11:59 AM
+              if (currentDate.getDay() === 6 && currentDate.getHours() > 11 && currentDate.getMinutes() > 59) {
+                existingAttendance.earlydepartureMinute = 0;
+                console.log('It is Saturday and the time is more than 11:59 AM, so early departure minutes set to 0.');
+              } else {
+                existingAttendance.earlydepartureMinute = earlyLeavingMinutes;
+                console.log('Early departure minutes updated.');
+              }
+            }
+            existingAttendance.save()
+              .then(() => {
+                console.log('attendance updated');
+                res.status(200).json({
+                  status: 'success',
+                  message: 'evening attendance updated successfully',
+                  data: existingAttendance,
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                res.status(500).json({
+                  status: 'error',
+                  message: 'failed to update attendance',
+                });
+              });
+
+          } else {
+            console.log('attendence exist');
+            res.status(409).json({
+              status: 'exist',
+              message: 'Attendance already exists',
+            });
+          }
         }
       } else {
         console.log('user not found');
