@@ -4,6 +4,9 @@ const Attendance = require('../model/attendenceMode');
 const User = require('../model/userModel');
 
 
+
+
+
 router.get('/', (req, res) => {
   res.send('hello');
 });
@@ -206,6 +209,8 @@ router.post('/submit', (req, res) => {
   console.log('name:', location.name);
 
 });
+
+
 
 
 module.exports = router
