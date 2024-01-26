@@ -41,14 +41,13 @@ router.post('/submit', (req, res) => {
   location.latitude = req.body.latitude;
   location.longitude = req.body.longitude;
   location.name = req.body.name;
+  
+  const indianTimeZone = 'Asia/Kolkata';
+  const options = { timeZone: indianTimeZone };
+  const currentDate = new Date().toLocaleString('en-US', options);
+  const currentDateTime = new Date(currentDate);
 
   function calculateLateEntryMinutes() {
-    const indianTimeZone = 'Asia/Kolkata';
-    const options = { timeZone: indianTimeZone };
-
-    const currentDate = new Date().toLocaleString('en-US', options);
-    const currentDateTime = new Date(currentDate);
-
     const targetTime = new Date(currentDate);
     targetTime.setHours(8, 45, 0, 0);
 
@@ -58,29 +57,17 @@ router.post('/submit', (req, res) => {
     if (currentDateTime > targetTime) {
       const timeDifference = currentDateTime.getTime() - targetTime.getTime();
       const minDifference = timeDifference / (1000 * 60);
-      // console.log("lateEntryInMinutes: " + minDifference);
 
       return minDifference;
     } else {
-      // console.log("Not within the specified time range.");
       return 0;
     }
   }
 
-  const indianTimeZone = 'Asia/Kolkata';
-    const options = { timeZone: indianTimeZone };
 
-    const currentDate = new Date().toLocaleString('en-US', options);
-    const currentDateTime = new Date(currentDate);
 
 
   function calculateEarlyLeavingMinutes() {
-    const indianTimeZone = 'Asia/Kolkata';
-    const options = { timeZone: indianTimeZone };
-
-    const currentDate = new Date().toLocaleString('en-US', options);
-    const currentDateTime = new Date(currentDate);
-    console.log(currentDateTime);
 
     const targetTime = new Date(currentDate);
     targetTime.setHours(14, 10, 0, 0);
@@ -95,16 +82,14 @@ router.post('/submit', (req, res) => {
     } else if (currentDateTime >= targetTime) {
 
       return 0;
-    }else{
+    } else {
       return -1;
     }
   }
 
   const lateEntryInMinutes = calculateLateEntryMinutes();
-  // console.log(`The hour difference between now and 9:00 AM today is: ${lateEntryInMinutes} hours.`);
 
   const earlyLeavingMinutes = calculateEarlyLeavingMinutes();
-  // console.log(`The difference between now and 2:00 PM is: ${earlyLeavingMinutes} minutes.`);
 
 
 
