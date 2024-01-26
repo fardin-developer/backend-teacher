@@ -43,41 +43,53 @@ router.post('/submit', (req, res) => {
   location.name = req.body.name;
 
   function calculateLateEntryMinutes() {
-    const currentDate = new Date();
-    // currentDate.setHours(9, 45, 0, 0);
-  
-    const targetTime = new Date();
+    const indianTimeZone = 'Asia/Kolkata';
+    const options = { timeZone: indianTimeZone };
+
+    const currentDate = new Date().toLocaleString('en-US', options);
+    const currentDateTime = new Date(currentDate);
+
+    const targetTime = new Date(currentDate);
     targetTime.setHours(8, 45, 0, 0);
-  
-    const lastTime = new Date();
+
+    const lastTime = new Date(currentDate);
     lastTime.setHours(14, 10, 0, 0);
-  
-    if (currentDate > targetTime) {
-      const timeDifference = currentDate - targetTime;
+
+    if (currentDateTime > targetTime) {
+      const timeDifference = currentDateTime.getTime() - targetTime.getTime();
       const minDifference = timeDifference / (1000 * 60);
-      console.log("lateEntryInMinutes"+minDifference);
-  
+      // console.log("lateEntryInMinutes: " + minDifference);
+
       return minDifference;
     } else {
+      // console.log("Not within the specified time range.");
       return 0;
     }
   }
 
+
   function calculateEarlyLeavingMinutes() {
-    const currentDate = new Date() //.setHours(12, 30, 0, 0);
+    const indianTimeZone = 'Asia/Kolkata';
+    const options = { timeZone: indianTimeZone };
+
+    const currentDate = new Date().toLocaleString('en-US', options);
+    const currentDateTime = new Date(currentDate);
+
     const targetTime = new Date(currentDate);
     targetTime.setHours(14, 10, 0, 0);
 
     const startTime = new Date(currentDate);
     startTime.setHours(9, 0, 0, 0);
 
-    if (currentDate < targetTime && currentDate > startTime) {
-      const timeDifference = targetTime - currentDate;
+    if (currentDateTime < targetTime && currentDateTime > startTime) {
+      const timeDifference = targetTime.getTime() - currentDateTime.getTime();
       const minuteDifference = timeDifference / (1000 * 60);
-
       return minuteDifference;
-    } else {
-      return 0; // If it's already 2:00 PM or later, return 0 minutes
+    } else if (currentDateTime >= targetTime) {
+
+      return 0;
+    }else{
+      return -1;
     }
   }
 
@@ -107,7 +119,7 @@ router.post('/submit', (req, res) => {
           // const targetTime = new Date(currentDate);
           // targetTime.setHours(9, 45, 0, 0);
 
-          if (lateEntryInMinutes>60) {
+          if (lateEntryInMinutes > 60) {
             return res.status(400).json({
               status: 'fail',
               message: 'You are too late',
@@ -138,7 +150,7 @@ router.post('/submit', (req, res) => {
           })
         } else {
           if (existingAttendance.morningStatus === true && existingAttendance.evengStatus === false) {
-            if (earlyLeavingMinutes>130) {
+            if (earlyLeavingMinutes > 130) {
               res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',

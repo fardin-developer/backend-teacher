@@ -7,7 +7,11 @@ const User = require('../model/userModel')
 
 router.get('/attendence-list', async (req, res) => {
   try {
-    const currentDate = new Date();
+    const indianTimeZone = 'Asia/Kolkata';
+    const options = { timeZone: indianTimeZone };
+
+    const currentDate = new Date().toLocaleString('en-US', options);
+    // const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const numberOfDays = lastDayOfMonth.getDate();
