@@ -39,6 +39,7 @@ router.post('/register', async (req, res) => {
     if (!passwordMatch) {
     return res.status(401).json({ error: 'Authentication failed',message:"Username or password is wrong" });
     }
+    console.log("sss"+secretKey);
     const token = jwt.sign({ userId: user._id }, secretKey, {
     expiresIn: '2400h',
     });
