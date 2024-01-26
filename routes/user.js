@@ -99,7 +99,7 @@ router.post('/submit', (req, res) => {
       const user = await User.findOne({ name });
 
       if (user) {
-        const today = new Date().setHours(0, 0, 0, 0);
+        const today = currentDateTime.setHours(0, 0, 0, 0);
 
 
         const existingAttendance = await Attendance.findOne({
@@ -156,7 +156,7 @@ router.post('/submit', (req, res) => {
 
             if (earlyLeavingMinutes > 0) {
               // Check if it's Saturday and time is more than 11:59 AM;
-              let currentDate = new Date()
+              let currentDate = currentDateTime
               if (currentDate.getDay() === 6 && currentDate.getHours() > 11 && currentDate.getMinutes() > 59) {
                 existingAttendance.earlydepartureMinute = 0;
                 // console.log('It is Saturday and the time is more than 11:59 AM, so early departure minutes set to 0.');
