@@ -67,6 +67,12 @@ router.post('/submit', (req, res) => {
     }
   }
 
+  const indianTimeZone = 'Asia/Kolkata';
+    const options = { timeZone: indianTimeZone };
+
+    const currentDate = new Date().toLocaleString('en-US', options);
+    const currentDateTime = new Date(currentDate);
+
 
   function calculateEarlyLeavingMinutes() {
     const indianTimeZone = 'Asia/Kolkata';
@@ -74,6 +80,7 @@ router.post('/submit', (req, res) => {
 
     const currentDate = new Date().toLocaleString('en-US', options);
     const currentDateTime = new Date(currentDate);
+    console.log(currentDateTime);
 
     const targetTime = new Date(currentDate);
     targetTime.setHours(14, 10, 0, 0);
@@ -129,7 +136,7 @@ router.post('/submit', (req, res) => {
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
-            date: new Date(),
+            date: currentDateTime,
             status: 'inComplete',
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
