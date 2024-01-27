@@ -11,6 +11,7 @@ const netAttendence = require('./routes/netAttendeces')
 const upgradeSalary = require('./routes/upgradeSalary');
 
 const rootUser = require('./routes/rootUser');
+TZ = 'Asia/Calcutta'
 
 require('dotenv').config();
 
