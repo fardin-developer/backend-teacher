@@ -49,7 +49,7 @@ router.post('/submit', (req, res) => {
 
   function calculateLateEntryMinutes() {
     const targetTime = new Date(currentDate);
-    targetTime.setHours(8, 45, 0, 0);
+    targetTime.setHours(16, 45, 0, 0);
 
     const lastTime = new Date(currentDate);
     lastTime.setHours(14, 10, 0, 0);
@@ -111,7 +111,7 @@ router.post('/submit', (req, res) => {
           // const targetTime = new Date(currentDate);
           // targetTime.setHours(9, 45, 0, 0);
 
-          if (lateEntryInMinutes > 60) {
+          if (lateEntryInMinutes > 600) {
             return res.status(400).json({
               status: 'fail',
               message: 'You are too late',
