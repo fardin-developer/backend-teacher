@@ -22,20 +22,15 @@ router.post('/salary', async (req, res) => {
             let userID = user._id;
              let result = await getNumberOfPresentAttendances(userID, month, year);
              let numberOfPresentAttendances = result.length
-            console.log("Number of present attendances:", numberOfPresentAttendances);
             let lateTimeCount = 0
 
             result.map((value)=>{
              lateTimeCount = lateTimeCount+ value.earlydepartureMinute+value.lateMinutes
             });
-            console.log(lateTimeCount);
-            console.log(userID);
             let daysalary = baseslary / 30;
 
             const lateTimeSalary = lateTimeCount *daysalary/(5*60);
-            console.log(lateTimeSalary);
             const finalSalary = numberOfPresentAttendances * daysalary + sundaysCount * daysalary -lateTimeSalary;
-            console.log("final " + finalSalary);
             res.status(200).json({
                 name: name,
                 month: month,
@@ -51,7 +46,9 @@ router.post('/salary', async (req, res) => {
 
 
         } else {
-            console.log('not found');
+            res.status(200).json({
+                message:"user not found"
+            })
         }
     }
 
@@ -61,7 +58,6 @@ router.post('/salary', async (req, res) => {
 function countSundaysInMonth(month, year) {
 
     const date = new Date(year, month, 1);
-    console.log("date: " + date);
     let count = 0;
 
     while (date.getMonth() === month) {

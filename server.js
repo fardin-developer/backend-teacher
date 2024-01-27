@@ -20,13 +20,12 @@ connectDB();
 const user = new User({
   name: 'john doe'
 })
-const verifyToken = require('./middleware/authMiddleware');
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/admin',rootUser);
 
-app.use('/',verifyToken, userRoute)
+app.use('/', userRoute)
 app.use('/', salary)
 app.use('/', createUser)
 app.use('/', netAttendence);
