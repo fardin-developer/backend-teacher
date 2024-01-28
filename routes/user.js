@@ -35,15 +35,15 @@ router.post('/submit', verifyToken, (req, res) => {
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
-  location.name = req.body.name;
+  location.name = req.body.name
 
   const currentDate = new Date()
   const modifiedDate = new Date(currentDate)
   modifiedDate.setHours(currentDate.getHours() + 5)
-  modifiedDate.setMinutes(modifiedDate.getMinutes() + 30);
-  const isoString = modifiedDate.toISOString();
+  modifiedDate.setMinutes(modifiedDate.getMinutes() + 30)
+  const isoString = modifiedDate.toISOString()
 
-  const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss');
+  const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss')
   const timeHour = Number(formattedTimeString.split(':')[0])
   const timeMin = Number(formattedTimeString.split(':')[1])
   const timeSec = Number(formattedTimeString.split(':')[2])
@@ -52,14 +52,12 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeMin)
   console.log(timeSec)
 
-  function calculateLateEntryMinutes () {  
-
-
+  function calculateLateEntryMinutes () {
     const targetTimeHour = 8
     const targetTimeMinute = 45
     const targetTimeSec = 0
     const lastTimeHour = 14
-    const lastTimeMinute = 10;
+    const lastTimeMinute = 10
     let minDifference
 
     if (timeHour === targetTimeHour && timeMin >= targetTimeMinute) {
@@ -81,18 +79,17 @@ router.post('/submit', verifyToken, (req, res) => {
   function calculateEarlyLeavingMinutes () {
     const targetTimeHour = 14
     const targetTimeMinute = 10
-    const targetTimeSec = 0;
-  
+    const targetTimeSec = 0
+
     if (timeHour <= targetTimeHour) {
-      const hourDiff = targetTimeHour - timeHour;
+      const hourDiff = targetTimeHour - timeHour
       const mindiff = targetTimeMinute - timeMin
-      const minuteDifference = hourDiff*60 + mindiff;
-      if (minuteDifference<0) {
+      const minuteDifference = hourDiff * 60 + mindiff
+      if (minuteDifference < 0) {
         return 0
-      }else{
+      } else {
         return minuteDifference
       }
-
     } else {
       return 0 // If it's already 2:00 PM or later, return 0 minutes
     }
@@ -107,7 +104,8 @@ router.post('/submit', verifyToken, (req, res) => {
       const user = await User.findOne({ name })
 
       if (user) {
-        const today = new Date().setHours(0, 0, 0, 0)
+        const today =
+          new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
@@ -136,7 +134,7 @@ router.post('/submit', verifyToken, (req, res) => {
           newAttendence
             .save()
             .then(saveAttendence => {
-             return res.status(200).json({
+              return res.status(200).json({
                 status: 'success',
                 message: `attendence saved successfully`,
                 data: saveAttendence
@@ -154,7 +152,7 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance.evengStatus === false
           ) {
             if (earlyLeavingMinutes > 130) {
-             return res.status(400).json({
+              return res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
                 data: 'Before 12:00 pm attendence is not allowed'
@@ -181,14 +179,14 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance
               .save()
               .then(() => {
-               return res.status(200).json({
+                return res.status(200).json({
                   status: 'success',
                   message: 'evening attendance updated successfully',
                   data: existingAttendance
                 })
               })
               .catch(err => {
-               return res.status(500).json({
+                return res.status(500).json({
                   status: 'error',
                   message: 'failed to update attendance'
                 })
@@ -201,7 +199,7 @@ router.post('/submit', verifyToken, (req, res) => {
           }
         }
       } else {
-         return res.status(404).json({
+        return res.status(404).json({
           user: 'user not found',
           status: 'noUser',
           message: 'User not found...',
