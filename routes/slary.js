@@ -27,6 +27,7 @@ router.post('/salary', async (req, res) => {
             result.map((value)=>{
              lateTimeCount = lateTimeCount+ value.earlydepartureMinute+value.lateMinutes
             });
+            lateTimeCount = (Math.round(lateTimeCount*100))/100
             let daysalary = baseslary / 30;
 
             const lateTimeSalary = lateTimeCount *daysalary/(5*60);
@@ -38,10 +39,10 @@ router.post('/salary', async (req, res) => {
                 numberOfPresentAttendances,
                 sundaysCount,
                 baseslary,
-                finalSalary: finalSalary,
+                finalSalary: (Math.round(finalSalary*100))/100,
                 lateTimeCount,
-                lateTimeSalary
-
+                lateTimeSalary:(Math.round(lateTimeSalary*100)/100
+)
             })
 
 
