@@ -53,7 +53,7 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeSec)
 
   function calculateLateEntryMinutes () {
-    const targetTimeHour = 12
+    const targetTimeHour = 0
     const targetTimeMinute = 30
     const targetTimeSec = 0
     const lastTimeHour = 14
