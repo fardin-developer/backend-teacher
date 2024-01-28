@@ -39,7 +39,7 @@ const port = process.env.PORT || 80;
 
 // Listen on `port` and 0.0.0.0
 app.listen(port, "0.0.0.0", function () {
-  console.log("server running at 4000");
+  console.log("server running at 80");
 
 });
 

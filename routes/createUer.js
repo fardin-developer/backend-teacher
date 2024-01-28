@@ -22,7 +22,6 @@ router.post('/create-user', (req, res) => {
             name: name,
             phone: phone,
             password: password,
-            dateOfJoin: new Date(),
             baseSalary: baseSalary
           })
           user.save().then(() => {
