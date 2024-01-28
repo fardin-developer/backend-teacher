@@ -5,12 +5,32 @@ const User = require('../model/userModel')
 
 router.get('/', (req, res) => {
   res.send('hello')
-});
+})
 
-const verifyToken = require('../middleware/authMiddleware');
+const verifyToken = require('../middleware/authMiddleware')
 
+router.get('/users', async (req, res) => {
+  const users = await User.find()
+  const allUsers = []
 
-router.post('/submit',verifyToken, (req, res) => {
+  for (let i = 0; i < users.length; i++) {
+    allUsers.push({
+      id: i,
+      name: users[i].name,
+      cost: users[i].baseSalary,
+      phone: users[i].phone,
+      date: users[i].dateOfJoin
+    })
+  }
+
+  console.log(allUsers)
+
+  res.json({
+    users: allUsers
+  })
+})
+
+router.post('/submit', verifyToken, (req, res) => {
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
@@ -176,6 +196,5 @@ router.post('/submit',verifyToken, (req, res) => {
   // console.log('Location:', location.longitude)
   // console.log('name:', location.name)
 })
-
 
 module.exports = router
