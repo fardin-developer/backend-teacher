@@ -53,8 +53,8 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeSec)
 
   function calculateLateEntryMinutes () {
-    const targetTimeHour = 0
-    const targetTimeMinute = 30
+    const targetTimeHour = 8
+    const targetTimeMinute = 45
     const targetTimeSec = 0
     const lastTimeHour = 14
     const lastTimeMinute = 10
@@ -77,7 +77,7 @@ router.post('/submit', verifyToken, (req, res) => {
   }
 
   function calculateEarlyLeavingMinutes () {
-    const targetTimeHour = 2
+    const targetTimeHour = 14
     const targetTimeMinute = 10
     const targetTimeSec = 0
 
@@ -142,7 +142,7 @@ router.post('/submit', verifyToken, (req, res) => {
             .then(saveAttendence => {
               return res.status(200).json({
                 status: 'success',
-                message: `attendence saved successfully`,
+                message: `Morning attendence saved successfully`,
                 data: saveAttendence
               })
             })
@@ -161,7 +161,7 @@ router.post('/submit', verifyToken, (req, res) => {
               return res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
-                data: 'Before 12:00 pm attendence is not allowed'
+                data: 'Before 12:00 pm evening attendence is not allowed'
               })
             }
             existingAttendance.evengStatus = true
@@ -187,7 +187,7 @@ router.post('/submit', verifyToken, (req, res) => {
               .then(() => {
                 return res.status(200).json({
                   status: 'success',
-                  message: 'evening attendance updated successfully',
+                  message: 'Evening attendance updated successfully',
                   data: existingAttendance
                 })
               })
