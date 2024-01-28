@@ -35,7 +35,7 @@ app.get('/new', (req, res) => {
   res.send("hello")
 })
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 80;
 
 // Listen on `port` and 0.0.0.0
 app.listen(port, "0.0.0.0", function () {
