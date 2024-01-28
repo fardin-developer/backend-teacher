@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Attendance = require('../model/attendenceMode')
 const User = require('../model/userModel')
+const moment = require('moment-timezone')
 
 router.get('/', (req, res) => {
   res.send('hello')
@@ -34,21 +35,43 @@ router.post('/submit', verifyToken, (req, res) => {
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
-  location.name = req.body.name
+  location.name = req.body.name;
 
-  function calculateLateEntryMinutes () {
-    const currentDate = new Date()
-    // currentDate.setHours(9, 45, 0, 0);
+  const currentDate = new Date()
+  const modifiedDate = new Date(currentDate)
+  modifiedDate.setHours(currentDate.getHours() + 5)
+  modifiedDate.setMinutes(modifiedDate.getMinutes() + 30);
+  const isoString = modifiedDate.toISOString();
 
-    const targetTime = new Date()
-    targetTime.setHours(8, 45, 0, 0)
+  const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss');
+  const timeHour = Number(formattedTimeString.split(':')[0])
+  const timeMin = Number(formattedTimeString.split(':')[1])
+  const timeSec = Number(formattedTimeString.split(':')[2])
 
-    const lastTime = new Date()
-    lastTime.setHours(14, 10, 0, 0)
+  console.log(timeHour)
+  console.log(timeMin)
+  console.log(timeSec)
 
-    if (currentDate > targetTime) {
-      const timeDifference = currentDate - targetTime
-      const minDifference = timeDifference / (1000 * 60)
+  function calculateLateEntryMinutes () {  
+
+
+    const targetTimeHour = 8
+    const targetTimeMinute = 45
+    const targetTimeSec = 0
+    const lastTimeHour = 14
+    const lastTimeMinute = 10;
+    let minDifference
+
+    if (timeHour === targetTimeHour && timeMin >= targetTimeMinute) {
+      minDifference = timeMin - targetTimeMinute
+      return minDifference
+    }
+
+    if (timeHour > targetTimeHour) {
+      const hourDifference = timeHour - targetTimeHour
+      const hourDifferenceInMin = hourDifference * 60
+      const newMinDifff = timeMin - targetTimeMinute
+      minDifference = hourDifferenceInMin + newMinDifff
       return minDifference
     } else {
       return 0
@@ -56,18 +79,20 @@ router.post('/submit', verifyToken, (req, res) => {
   }
 
   function calculateEarlyLeavingMinutes () {
-    const currentDate = new Date() //.setHours(12, 30, 0, 0);
-    const targetTime = new Date(currentDate)
-    targetTime.setHours(14, 10, 0, 0)
+    const targetTimeHour = 14
+    const targetTimeMinute = 10
+    const targetTimeSec = 0;
+  
+    if (timeHour <= targetTimeHour) {
+      const hourDiff = targetTimeHour - timeHour;
+      const mindiff = targetTimeMinute - timeMin
+      const minuteDifference = hourDiff*60 + mindiff;
+      if (minuteDifference<0) {
+        return 0
+      }else{
+        return minuteDifference
+      }
 
-    const startTime = new Date(currentDate)
-    startTime.setHours(9, 0, 0, 0)
-
-    if (currentDate < targetTime && currentDate > startTime) {
-      const timeDifference = targetTime - currentDate
-      const minuteDifference = timeDifference / (1000 * 60)
-
-      return minuteDifference
     } else {
       return 0 // If it's already 2:00 PM or later, return 0 minutes
     }
@@ -103,7 +128,7 @@ router.post('/submit', verifyToken, (req, res) => {
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
-            date: new Date(),
+            date: isoString,
             status: 'inComplete',
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
@@ -111,14 +136,14 @@ router.post('/submit', verifyToken, (req, res) => {
           newAttendence
             .save()
             .then(saveAttendence => {
-              res.status(200).json({
+             return res.status(200).json({
                 status: 'success',
                 message: `attendence saved successfully`,
                 data: saveAttendence
               })
             })
             .catch(err => {
-              res.status(500).json({
+              return res.status(500).json({
                 status: 'error',
                 message: 'failed to save attendence'
               })
@@ -129,7 +154,7 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance.evengStatus === false
           ) {
             if (earlyLeavingMinutes > 130) {
-              res.status(400).json({
+             return res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
                 data: 'Before 12:00 pm attendence is not allowed'
@@ -156,34 +181,34 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance
               .save()
               .then(() => {
-                res.status(200).json({
+               return res.status(200).json({
                   status: 'success',
                   message: 'evening attendance updated successfully',
                   data: existingAttendance
                 })
               })
               .catch(err => {
-                res.status(500).json({
+               return res.status(500).json({
                   status: 'error',
                   message: 'failed to update attendance'
                 })
               })
           } else {
-            res.status(409).json({
+            return res.status(409).json({
               status: 'exist',
               message: 'Attendance already exists'
             })
           }
         }
       } else {
-        res.status(404).json({
+         return res.status(404).json({
           user: 'user not found',
           status: 'noUser',
           message: 'User not found...',
           data: 'Check your username or be a member first'
         })
       }
-      return user
+      return 0
     } catch (error) {
       console.error('Error finding user:', error)
       throw error

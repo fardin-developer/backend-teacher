@@ -16,7 +16,6 @@ const UserSchema = new mongoose.Schema({
   dateOfJoin: {
     type: Date,
     required: true,
-    default: Date.now
   },
   baseSalary:Number,
   netLeave:Number
