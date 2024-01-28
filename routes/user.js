@@ -53,8 +53,8 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeSec)
 
   function calculateLateEntryMinutes () {
-    const targetTimeHour = 8
-    const targetTimeMinute = 45
+    const targetTimeHour = 12
+    const targetTimeMinute = 30
     const targetTimeSec = 0
     const lastTimeHour = 14
     const lastTimeMinute = 10
@@ -105,7 +105,7 @@ router.post('/submit', verifyToken, (req, res) => {
 
       if (user) {
         const today =
-          new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
+          new Date().setHours(0, 0, 0, 0) 
         let actualtoday = today + 5 * 60 * 60 * 1000 + 30 * 60 * 1000;
         console.log(new Date().setHours(0, 0, 0, 0)+" set 000");
         console.log(new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000);
