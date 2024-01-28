@@ -77,7 +77,7 @@ router.post('/submit', verifyToken, (req, res) => {
   }
 
   function calculateEarlyLeavingMinutes () {
-    const targetTimeHour = 14
+    const targetTimeHour = 2
     const targetTimeMinute = 10
     const targetTimeSec = 0
 
