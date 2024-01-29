@@ -52,8 +52,8 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeMin)
   console.log(timeSec)
 
-  function calculateLateEntryMinutes () {
-    const targetTimeHour = 10
+  function calculateLateEntryMinutes() {
+    const targetTimeHour = 11
     const targetTimeMinute = 45
     const targetTimeSec = 0
     const lastTimeHour = 14
@@ -76,7 +76,7 @@ router.post('/submit', verifyToken, (req, res) => {
     }
   }
 
-  function calculateEarlyLeavingMinutes () {
+  function calculateEarlyLeavingMinutes() {
     const targetTimeHour = 14
     const targetTimeMinute = 10
     const targetTimeSec = 0
@@ -104,21 +104,18 @@ router.post('/submit', verifyToken, (req, res) => {
       const user = await User.findOne({ name })
 
       if (user) {
-        const todayIST = new Date()
-          .toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
-          .split(',')[0]
-        const today = new Date(todayIST).setHours(0, 0, 0, 0)
-        let actualtoday = today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000)
-        console.log(new Date().setHours(0, 0, 0, 0) + ' set 000')
-        console.log(
-          new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
-        )
-        console.log(today + ' greater')
-        //greater in server 1706486400000;
-        //1706466600000
-        console.log(
-          today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 'actual today'
-        )
+        const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }).split(',')[0]
+
+        const today = new Date(todayIST).setHours(0, 0, 0, 0);//today is showing correct in local but not in server
+
+        // in server 1706486400000;===Mon Jan 29 2024 05:30:00 GMT+0530 (India Standard Time)
+        // in local 1706466600000 === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time);
+
+        let actualtoday = today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000);
+        //its correct in server
+
+
+        console.log(actualtoday + 'actual today')
         //actual today in server = 1706466600000; === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time)
         //actual today in local = 1706446800000; ==== Sun Jan 28 2024 18:30:00 GMT+0530 (India Standard Time)
 
@@ -126,7 +123,7 @@ router.post('/submit', verifyToken, (req, res) => {
           user: user._id,
           date: {
             $gte: actualtoday,
-            $lt: today + 24 * 60 * 60 * 1000
+            $lt: actualtoday + 24 * 60 * 60 * 1000
           }
         })
         console.log(existingAttendance)
