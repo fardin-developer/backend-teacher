@@ -9,6 +9,7 @@ const salary = require('./routes/slary')
 const createUser = require('./routes/createUer');
 const netAttendence = require('./routes/netAttendeces')
 const upgradeSalary = require('./routes/upgradeSalary');
+const holiday = require('./routes/holiday')
 
 const rootUser = require('./routes/rootUser');
 TZ = 'Asia/Calcutta'
@@ -28,6 +29,7 @@ app.use('/admin',rootUser);
 app.use('/', userRoute)
 app.use('/', salary)
 app.use('/', createUser)
+app.use('/', holiday)
 app.use('/', netAttendence);
 app.use('/',upgradeSalary);
 
