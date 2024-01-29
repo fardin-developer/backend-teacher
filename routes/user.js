@@ -108,22 +108,28 @@ router.post('/submit', verifyToken, (req, res) => {
           .toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
           .split(',')[0]
         const today = new Date(todayIST).setHours(0, 0, 0, 0)
-        let actualtoday =
-          today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 24 * 60 * 60 * 1000
+        let actualtoday = today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000)
         console.log(new Date().setHours(0, 0, 0, 0) + ' set 000')
         console.log(
           new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
         )
-        console.log(today + ' greater');
+        console.log(today + ' greater')
         //greater in server 1706486400000;
         //1706466600000
-        console.log(today- (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 'actual today')
+        console.log(
+          today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 'actual today'
+        )
+        //actual today in server = 1706466600000; === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time)
+        //actual today in local = 1706446800000; ==== Sun Jan 28 2024 18:30:00 GMT+0530 (India Standard Time)
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
-          date: { $gte: today- 5 * 60 * 60 * 1000 + 30 * 60 * 1000, $lt: today + 24 * 60 * 60 * 1000 }
+          date: {
+            $gte: actualtoday,
+            $lt: today + 24 * 60 * 60 * 1000
+          }
         })
-        console.log(existingAttendance);
+        console.log(existingAttendance)
         if (!existingAttendance) {
           // const currentDate = new Date();
           // const targetTime = new Date(currentDate);
