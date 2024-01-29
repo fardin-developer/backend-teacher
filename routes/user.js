@@ -117,7 +117,7 @@ router.post('/submit', verifyToken, (req, res) => {
         console.log(today + ' greater');
         //greater in server 1706486400000;
         //1706466600000
-        console.log(today- 5 * 60 * 60 * 1000 + 30 * 60 * 1000 + 'actual today')
+        console.log(today- (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 'actual today')
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
