@@ -41,7 +41,9 @@ router.post('/submit', verifyToken, (req, res) => {
   const modifiedDate = new Date(currentDate)
   modifiedDate.setHours(currentDate.getHours() + 5)
   modifiedDate.setMinutes(modifiedDate.getMinutes() + 30)
-  const isoString = modifiedDate.toISOString()
+  const isoString = modifiedDate.toISOString();
+  console.log(modifiedDate);
+  console.log(isoString);
 
   const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss')
   const timeHour = Number(formattedTimeString.split(':')[0])
@@ -126,7 +128,6 @@ router.post('/submit', verifyToken, (req, res) => {
             $lt: actualtoday + 24 * 60 * 60 * 1000
           }
         })
-        console.log(existingAttendance)
         if (!existingAttendance) {
           // const currentDate = new Date();
           // const targetTime = new Date(currentDate);
