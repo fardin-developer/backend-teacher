@@ -104,7 +104,10 @@ router.post('/submit', verifyToken, (req, res) => {
       const user = await User.findOne({ name })
 
       if (user) {
-        const today = new Date().setHours(0, 0, 0, 0)
+        const todayIST = new Date()
+          .toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+          .split(',')[0]
+        const today = new Date(todayIST).setHours(0, 0, 0, 0)
         let actualtoday =
           today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 24 * 60 * 60 * 1000
         console.log(new Date().setHours(0, 0, 0, 0) + ' set 000')
@@ -112,12 +115,13 @@ router.post('/submit', verifyToken, (req, res) => {
           new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
         )
         console.log(today + ' greater')
-        console.log(actualtoday+"actual today");
+        console.log(actualtoday + 'actual today')
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
           date: { $gte: today, $lt: today + 24 * 60 * 60 * 1000 }
         })
+        console.log(existingAttendance);
         if (!existingAttendance) {
           // const currentDate = new Date();
           // const targetTime = new Date(currentDate);
@@ -149,10 +153,10 @@ router.post('/submit', verifyToken, (req, res) => {
               })
             })
             .catch(err => {
-              console.log(err);
+              console.log(err)
               return res.status(500).json({
                 status: 'error',
-                message: 'failed to save attendence',
+                message: 'failed to save attendence'
               })
             })
         } else {
