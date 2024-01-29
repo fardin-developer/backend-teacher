@@ -114,12 +114,14 @@ router.post('/submit', verifyToken, (req, res) => {
         console.log(
           new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
         )
-        console.log(today + ' greater')
-        console.log(actualtoday + 'actual today')
+        console.log(today + ' greater');
+        //greater in server 1706486400000;
+        //1706466600000
+        console.log(today- 5 * 60 * 60 * 1000 + 30 * 60 * 1000 + 'actual today')
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
-          date: { $gte: today, $lt: today + 24 * 60 * 60 * 1000 }
+          date: { $gte: today- 5 * 60 * 60 * 1000 + 30 * 60 * 1000, $lt: today + 24 * 60 * 60 * 1000 }
         })
         console.log(existingAttendance);
         if (!existingAttendance) {
