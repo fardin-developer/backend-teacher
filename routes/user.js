@@ -32,6 +32,10 @@ router.get('/users', async (req, res) => {
 })
 
 router.post('/submit', verifyToken, (req, res) => {
+
+  //when first attendance will give  isoString (which is equal with modifiedDate) will be save 
+  //new Date(todayIST).setHours(0, 0, 0, 0); in local it starts time with 00:00:00 but in server
+  //it starts with time 05:30:00 so i - minus 5 hours and 30 minute to get the actual date
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
@@ -42,17 +46,17 @@ router.post('/submit', verifyToken, (req, res) => {
   modifiedDate.setHours(currentDate.getHours() + 5)
   modifiedDate.setMinutes(modifiedDate.getMinutes() + 30)
   const isoString = modifiedDate.toISOString();
-  console.log(modifiedDate);
-  console.log(isoString);
+  // console.log(modifiedDate);
+  // console.log(isoString);
 
   const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss')
   const timeHour = Number(formattedTimeString.split(':')[0])
   const timeMin = Number(formattedTimeString.split(':')[1])
   const timeSec = Number(formattedTimeString.split(':')[2])
 
-  console.log(timeHour)
-  console.log(timeMin)
-  console.log(timeSec)
+  // console.log(timeHour)
+  // console.log(timeMin)
+  // console.log(timeSec)
 
   function calculateLateEntryMinutes() {
     const targetTimeHour = 11
@@ -117,7 +121,7 @@ router.post('/submit', verifyToken, (req, res) => {
         //its correct in server
 
 
-        console.log(actualtoday + 'actual today')
+        // console.log(actualtoday + ' actual today')
         //actual today in server = 1706466600000; === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time)
         //actual today in local = 1706446800000; ==== Sun Jan 28 2024 18:30:00 GMT+0530 (India Standard Time)
 
@@ -140,7 +144,6 @@ router.post('/submit', verifyToken, (req, res) => {
               data: 'after 9:40 am moring attendance is not allowed'
             })
           }
-          console.log(modifiedDate)
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
@@ -159,7 +162,6 @@ router.post('/submit', verifyToken, (req, res) => {
               })
             })
             .catch(err => {
-              console.log(err)
               return res.status(500).json({
                 status: 'error',
                 message: 'failed to save attendence'
@@ -233,10 +235,6 @@ router.post('/submit', verifyToken, (req, res) => {
   }
   const name = location.name
   findUserByName(name)
-
-  // console.log('Location:', location.latitude)
-  // console.log('Location:', location.longitude)
-  // console.log('name:', location.name)
 })
 
 module.exports = router
