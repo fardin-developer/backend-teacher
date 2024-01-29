@@ -30,7 +30,7 @@ router.post('/salary', async (req, res) => {
                     finalSalary: 0,
                     lateTimeCount:0,
                     lateTimeSalary: 0,
-                    id:user._id.toString().slice(-5)
+                    id:user._id.toString().slice(-10)
                 })
             }
             let lateTimeCount = 0
@@ -57,7 +57,7 @@ router.post('/salary', async (req, res) => {
                 finalSalary: Math.round(finalSalary * 100) / 100,
                 lateTimeCount,
                 lateTimeSalary: Math.round(lateTimeSalary * 100) / 100,
-                id:user._id.toString().slice(-5)
+                id:user._id.toString().slice(-10)
             })
         } else {
             res.status(200).json({
