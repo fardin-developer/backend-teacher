@@ -53,7 +53,7 @@ router.post('/submit', verifyToken, (req, res) => {
   console.log(timeSec)
 
   function calculateLateEntryMinutes () {
-    const targetTimeHour = 8
+    const targetTimeHour = 10
     const targetTimeMinute = 45
     const targetTimeSec = 0
     const lastTimeHour = 14
@@ -106,16 +106,17 @@ router.post('/submit', verifyToken, (req, res) => {
       if (user) {
         const today = new Date().setHours(0, 0, 0, 0)
         let actualtoday =
-          today - (5 * 60 * 60 * 1000 +30 * 60 * 1000) + 24 * 60 * 60 * 1000
+          today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000) + 24 * 60 * 60 * 1000
         console.log(new Date().setHours(0, 0, 0, 0) + ' set 000')
         console.log(
           new Date().setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
         )
-        console.log(actualtoday + ' greater')
+        console.log(today + ' greater')
+        console.log(actualtoday+"actual today");
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
-          date: { $gte: actualtoday, $lt: actualtoday + 24 * 60 * 60 * 1000 }
+          date: { $gte: today, $lt: today + 24 * 60 * 60 * 1000 }
         })
         if (!existingAttendance) {
           // const currentDate = new Date();
@@ -129,11 +130,12 @@ router.post('/submit', verifyToken, (req, res) => {
               data: 'after 9:40 am moring attendance is not allowed'
             })
           }
+          console.log(modifiedDate)
           const newAttendence = new Attendance({
             user: user._id,
             name: user.name,
-            date: isoString,
             status: 'inComplete',
+            date: isoString,
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
           })
@@ -147,9 +149,10 @@ router.post('/submit', verifyToken, (req, res) => {
               })
             })
             .catch(err => {
+              console.log(err);
               return res.status(500).json({
                 status: 'error',
-                message: 'failed to save attendence'
+                message: 'failed to save attendence',
               })
             })
         } else {
