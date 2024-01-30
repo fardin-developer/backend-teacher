@@ -96,7 +96,7 @@ const getNumberOfPresentAttendances = async (userID, month, year) => {
 
         return presentAttendances
     } catch (error) {
-        console.error('Error fetching attendances:', error)
+        // console.error('Error fetching attendances:', error)
         throw error
     }
 }

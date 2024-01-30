@@ -14,7 +14,7 @@ router.get('/attendence-list', async (req, res) => {
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const numberOfDays = lastDayOfMonth.getDate();
-    console.log(numberOfDays);
+    // console.log(numberOfDays);
 
 
     const attendances = await Attendance.find({
@@ -44,11 +44,11 @@ router.get('/attendence-list', async (req, res) => {
       });
     });
 
-    console.log(data);
+    // console.log(data);
 
     res.status(200).json(data);
   } catch (error) {
-    console.error('Error fetching data:', error);
+    // console.error('Error fetching data:', error);
     res.status(500).json({
       status: 'error',
       message: 'Failed to fetch data',

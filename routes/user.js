@@ -24,7 +24,7 @@ router.get('/users', async (req, res) => {
     })
   }
 
-  console.log(allUsers)
+  // console.log(allUsers)
 
   res.json({
     users: allUsers
@@ -229,7 +229,7 @@ router.post('/submit', verifyToken, (req, res) => {
       }
       return 0
     } catch (error) {
-      console.error('Error finding user:', error)
+      // console.error('Error finding user:', error)
       throw error
     }
   }

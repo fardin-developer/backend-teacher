@@ -3,10 +3,10 @@ const router = express.Router()
 const User = require('../model/userModel')
 
 router.post('/create-user', (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   // res.send("hello");
   const { name, baseSalary, password, confirmPassword, phone } = req.body
-  console.log('name ;' + name)
+  // console.log('name ;' + name)
   // console.log(baseSalary);
   // console.log(password);
   // console.log(phone);
@@ -47,7 +47,7 @@ router.post('/create-user', (req, res) => {
           })
         }
       } else {
-        console.log('user already exist ,please change the name')
+        // console.log('user already exist ,please change the name')
         res.json({
           status: 500,
           message: 'user already exist',
@@ -56,7 +56,7 @@ router.post('/create-user', (req, res) => {
       }
       return user
     } catch (error) {
-      console.error('Error finding user:', error)
+      // console.error('Error finding user:', error)
       throw error
     }
   }

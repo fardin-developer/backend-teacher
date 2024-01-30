@@ -63,7 +63,6 @@ router.get('/half-holiday', async (req, res) => {
                 $lt: actualtoday + 24 * 60 * 60 * 1000
             }
         });
-        console.log(existingAttendance);
     
         if (existingAttendance && existingAttendance.morningStatus === true && !existingAttendance.evengStatus) {
             existingAttendance.evengStatus = true;
@@ -86,7 +85,7 @@ router.get('/half-holiday', async (req, res) => {
             });
         })
         .catch(err => {
-            console.error(err);
+            // console.error(err);
             return res.status(500).json({
                 status: 'error',
                 message: 'Failed to save attendance'
