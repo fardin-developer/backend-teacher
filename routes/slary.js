@@ -2,6 +2,10 @@ const express = require('express')
 const router = express.Router()
 const User = require('../model/userModel')
 const Attendance = require('../model/attendenceMode')
+const moment = require('moment-timezone');
+const indiaTimeZone = 'Asia/Kolkata';
+const currentDate = moment().tz(indiaTimeZone);
+
 router.get('/salary', (req, res) => { })
 
 router.post('/salary', async (req, res) => {
@@ -85,20 +89,24 @@ function countSundaysInMonth(month, year) {
 
 const getNumberOfPresentAttendances = async (userID, month, year) => {
     try {
+        const startOfMonth = moment().tz('Asia/Kolkata').year(year).month(month).startOf('month');
+        const startOfMonthValue = startOfMonth.valueOf();
+        const endOfMonthValue = startOfMonth.clone().endOf('month').valueOf();
         const presentAttendances = await Attendance.find({
             user: userID,
             status: 'present',
             date: {
-                $gte: new Date(year, month, 1),
-                $lte: new Date(year, month + 1, 0)
+                $gte: startOfMonthValue,
+                $lte: endOfMonthValue
             }
-        })
-
-        return presentAttendances
+        });
+        return presentAttendances; // Return the number of present attendances
     } catch (error) {
-        // console.error('Error fetching attendances:', error)
-        throw error
+        console.error('Error fetching attendances:', error);
+        throw error;
     }
-}
+};
+
+
 
 module.exports = router
