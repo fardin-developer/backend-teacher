@@ -39,7 +39,11 @@ router.post('/submit', verifyToken, (req, res) => {
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
-  location.name = req.body.name
+  location.name = req.body.name;
+
+  const now = moment().tz("Asia/Kolkata");
+  const dayOfWeekNumber = now.day();
+  console.log("Day of the week (number):", dayOfWeekNumber);
 
   const currentDate = new Date()
   const modifiedDate = new Date(currentDate)
@@ -110,7 +114,7 @@ router.post('/submit', verifyToken, (req, res) => {
       const user = await User.findOne({ name })
 
       if (user) {
-        const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }).split(',')[0]
+        const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }).split(',')[0];
 
         const today = new Date(todayIST).setHours(0, 0, 0, 0);//today is showing correct in local but not in server
 
@@ -186,11 +190,11 @@ router.post('/submit', verifyToken, (req, res) => {
 
             if (earlyLeavingMinutes > 0) {
               // Check if it's Saturday and time is more than 11:59 AM;
-              let currentDate = new Date()
+              let currentDate =dayOfWeekNumber;
               if (
-                currentDate.getDay() === 6 &&
-                currentDate.getHours() > 11 &&
-                currentDate.getMinutes() > 59
+                currentDate === 6 &&
+                timeHour > 11 &&
+                timeMin > 59
               ) {
                 existingAttendance.earlydepartureMinute = 0
               } else {
