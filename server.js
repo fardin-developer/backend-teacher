@@ -10,6 +10,8 @@ const createUser = require('./routes/createUer');
 const netAttendence = require('./routes/netAttendeces')
 const upgradeSalary = require('./routes/upgradeSalary');
 const holiday = require('./routes/holiday')
+const createStudent = require('./routes/createStudent')
+const getStudent = require('./routes/getStudent')
 
 const rootUser = require('./routes/rootUser');
 TZ = 'Asia/Calcutta'
@@ -27,6 +29,8 @@ app.use(bodyParser.json());
 app.use('/admin',rootUser);
 
 app.use('/', userRoute)
+app.use('/', createStudent)
+app.use('/', getStudent)
 app.use('/', salary)
 app.use('/', createUser)
 app.use('/', holiday)

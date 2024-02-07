@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const AttendanceSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
+    ref: 'User',
     required: true,
   },
-  name:{
-     type:String,
-     required:true
+  name: {
+    type: String,
+    required: true
   },
   date: {
     type: Date,
@@ -16,7 +16,7 @@ const AttendanceSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['present', 'absent', 'late', 'inComplete'], 
+    enum: ['present', 'absent', 'late', 'inComplete'],
     default: 'absent',
     required: true,
   },
@@ -30,15 +30,15 @@ const AttendanceSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
-  lateMinutes:{
-    type:Number,
+  lateMinutes: {
+    type: Number,
     default: 0,
-    require:true
+    require: true
   },
-  earlydepartureMinute:{
-    type:Number,
+  earlydepartureMinute: {
+    type: Number,
     default: 0,
-    require:true
+    require: true
   }
 });
 
