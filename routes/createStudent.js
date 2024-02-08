@@ -6,7 +6,11 @@ const Student = require('../model/StudentModel');
 
 router.post('/create-student', async (req, res) => {
     const { name, rollNo, DOB, Class, parentsPhone } = req.body
-    console.log('running');
+    if (!name || !rollNo || !DOB || !Class|| !parentsPhone) {
+        return res.json({
+            message:"All fields are required"
+        })
+    }
 
     const user = await Student.findOne({ name })
     if (!user) {
