@@ -12,7 +12,7 @@ router.post('/create-student', async (req, res) => {
         })
     }
 
-    const user = await Student.findOne({ name })
+    const user = await Student.findOne({rollNo,Class});
     if (!user) {
         const user = new Student({
             name: name,
