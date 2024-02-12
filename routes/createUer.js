@@ -1,20 +1,26 @@
 const express = require('express')
 const router = express.Router()
-const User = require('../model/userModel')
+const User = require('../model/userModel');
+const moment = require('moment-timezone');
+
 
 router.post('/create-user', (req, res) => {
-  // console.log(req.body)
-  // res.send("hello");
+  const now = moment().tz("Asia/Kolkata");
+const formattedDate = now.format("YYYY-MM-DDTHH:mm:ss.SSS") + 'Z';
+const formattedDateInDateObj = new Date(formattedDate);
+console.log(formattedDateInDateObj);
+
   const { name, baseSalary, password, confirmPassword, phone } = req.body
   // console.log('name ;' + name)
   // console.log(baseSalary);
   // console.log(password);
   // console.log(phone);
-  const currentDate = new Date()
-  const modifiedDate = new Date(currentDate)
-  modifiedDate.setHours(currentDate.getHours() + 5)
-  modifiedDate.setMinutes(modifiedDate.getMinutes() + 30);
-  const isoString = modifiedDate.toISOString();
+  // const currentDate = new Date()
+  // const modifiedDate = new Date(currentDate)
+  // modifiedDate.setHours(currentDate.getHours() + 5)
+  // modifiedDate.setMinutes(modifiedDate.getMinutes() + 30);
+  // console.log(modifiedDate);
+  // const isoString = modifiedDate.toISOString();
 
 
   // Get the ISO string representation in Indian Standard Time
