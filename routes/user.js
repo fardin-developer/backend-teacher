@@ -176,7 +176,7 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance.morningStatus === true &&
             existingAttendance.evengStatus === false
           ) {
-            if (earlyLeavingMinutes > 130) {
+            if (earlyLeavingMinutes > 1300) {
               return res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
@@ -192,9 +192,9 @@ router.post('/submit', verifyToken, (req, res) => {
               // Check if it's Saturday and time is more than 11:59 AM;
               let currentDate =dayOfWeekNumber;
               if (
-                currentDate === 6 &&
-                timeHour > 11 &&
-                timeMin > 59
+                currentDate == 6 &&
+                timeHour >= 12 &&
+                timeMin >= 0
               ) {
                 existingAttendance.earlydepartureMinute = 0
               } else {
