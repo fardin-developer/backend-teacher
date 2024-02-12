@@ -11,26 +11,7 @@ const formattedDateInDateObj = new Date(formattedDate);
 console.log(formattedDateInDateObj);
 
   const { name, baseSalary, password, confirmPassword, phone } = req.body
-  // console.log('name ;' + name)
-  // console.log(baseSalary);
-  // console.log(password);
-  // console.log(phone);
-  // const currentDate = new Date()
-  // const modifiedDate = new Date(currentDate)
-  // modifiedDate.setHours(currentDate.getHours() + 5)
-  // modifiedDate.setMinutes(modifiedDate.getMinutes() + 30);
-  // console.log(modifiedDate);
-  // const isoString = modifiedDate.toISOString();
-
-
-  // Get the ISO string representation in Indian Standard Time
-  // const isoStringIST = currentDate.toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour12: false });
   
-  // console.log(isoStringIST);
-  
-
-
-
   const findByName = async name => {
     try {
       const user = await User.findOne({ name })
@@ -40,7 +21,7 @@ console.log(formattedDateInDateObj);
             name: name,
             phone: phone,
             password: password,
-            dateOfJoin:isoString,
+            dateOfJoin:formattedDateInDateObj,
             baseSalary: baseSalary
           })
           user.save().then(() => {
