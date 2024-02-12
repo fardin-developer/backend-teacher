@@ -12,7 +12,7 @@ router.post('/create-student', async (req, res) => {
         })
     }
 
-    const user = await Student.findOne({rollNo,Class});
+    const user = await Student.findOne({rollNo,Class,section});
     if (!user) {
         const user = new Student({
             name: name,
@@ -41,9 +41,8 @@ router.post('/create-student', async (req, res) => {
 
 })
 router.post('/payment-update',async(req,res)=>{
-   const {Class,rollNo} = req.body
-   console.log(Class);
-   const student = await Student.findOne({rollNo,Class});
+   const {Class,rollNo,section} = req.body
+   const student = await Student.findOne({rollNo,Class,section});
    console.log(student);
    if (!student) {
     return res.json({message:"user not found"})
