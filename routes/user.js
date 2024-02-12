@@ -33,34 +33,25 @@ router.get('/users', async (req, res) => {
 
 router.post('/submit', verifyToken, (req, res) => {
 
-  //when first attendance will give  isoString (which is equal with modifiedDate) will be save 
-  //new Date(todayIST).setHours(0, 0, 0, 0); in local it starts time with 00:00:00 but in server
-  //it starts with time 05:30:00 so i - minus 5 hours and 30 minute to get the actual date
   const location = {}
   location.latitude = req.body.latitude
   location.longitude = req.body.longitude
   location.name = req.body.name;
-
   const now = moment().tz("Asia/Kolkata");
-  const dayOfWeekNumber = now.day();
-  console.log("Day of the week (number):", dayOfWeekNumber);
+  const formattedDate = now.format("YYYY-MM-DDTHH:mm:ss.SSS") + 'Z';
+  const formattedDateInDateObj = new Date(formattedDate);
+  // console.log(formattedDateInDateObj);
 
-  const currentDate = new Date()
-  const modifiedDate = new Date(currentDate)
-  modifiedDate.setHours(currentDate.getHours() + 5)
-  modifiedDate.setMinutes(modifiedDate.getMinutes() + 30)
-  const isoString = modifiedDate.toISOString();
-  // console.log(modifiedDate);
-  // console.log(isoString);
+  const dayOfWeekNumber = now.day();
+  // console.log("Day of the week (number):", dayOfWeekNumber);
+  const todayIST = now.startOf('day');
+  let actualtoday = todayIST.valueOf();
+  // console.log(actualtoday);
+
 
   const formattedTimeString = moment().tz('Asia/Kolkata').format('HH:mm:ss')
   const timeHour = Number(formattedTimeString.split(':')[0])
   const timeMin = Number(formattedTimeString.split(':')[1])
-  const timeSec = Number(formattedTimeString.split(':')[2])
-
-  // console.log(timeHour)
-  // console.log(timeMin)
-  // console.log(timeSec)
 
   function calculateLateEntryMinutes() {
     const targetTimeHour = 8
@@ -114,33 +105,15 @@ router.post('/submit', verifyToken, (req, res) => {
       const user = await User.findOne({ name })
 
       if (user) {
-        const todayIST = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }).split(',')[0];
-
-        const today = new Date(todayIST).setHours(0, 0, 0, 0);//today is showing correct in local but not in server
-
-        // in server 1706486400000;===Mon Jan 29 2024 05:30:00 GMT+0530 (India Standard Time)
-        // in local 1706466600000 === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time);
-
-        let actualtoday = today - (5 * 60 * 60 * 1000 + 30 * 60 * 1000);
-        //its correct in server
-
-
-        // console.log(actualtoday + ' actual today')
-        //actual today in server = 1706466600000; === Mon Jan 29 2024 00:00:00 GMT+0530 (India Standard Time)
-        //actual today in local = 1706446800000; ==== Sun Jan 28 2024 18:30:00 GMT+0530 (India Standard Time)
 
         const existingAttendance = await Attendance.findOne({
           user: user._id,
           date: {
             $gte: actualtoday,
-            $lt: actualtoday + 24 * 60 * 60 * 1000
+            $lt: actualtoday +( 24 * 60 * 60 * 1000)
           }
         })
         if (!existingAttendance) {
-          // const currentDate = new Date();
-          // const targetTime = new Date(currentDate);
-          // targetTime.setHours(9, 45, 0, 0);
-
           if (lateEntryInMinutes > 60) {
             return res.status(400).json({
               status: 'fail',
@@ -152,7 +125,7 @@ router.post('/submit', verifyToken, (req, res) => {
             user: user._id,
             name: user.name,
             status: 'inComplete',
-            date: isoString,
+            date: formattedDateInDateObj,
             morningStatus: true,
             lateMinutes: lateEntryInMinutes
           })
@@ -176,7 +149,7 @@ router.post('/submit', verifyToken, (req, res) => {
             existingAttendance.morningStatus === true &&
             existingAttendance.evengStatus === false
           ) {
-            if (earlyLeavingMinutes > 1300) {
+            if (earlyLeavingMinutes > 130) {
               return res.status(400).json({
                 status: 'fail',
                 message: 'You are trying too early',
@@ -190,7 +163,7 @@ router.post('/submit', verifyToken, (req, res) => {
 
             if (earlyLeavingMinutes > 0) {
               // Check if it's Saturday and time is more than 11:59 AM;
-              let currentDate =dayOfWeekNumber;
+              let currentDate = dayOfWeekNumber;
               if (
                 currentDate == 6 &&
                 timeHour >= 12 &&
