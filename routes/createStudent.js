@@ -5,7 +5,7 @@ const moment = require('moment-timezone')
 const Student = require('../model/StudentModel');
 
 router.post('/create-student', async (req, res) => {
-    const { name, rollNo, DOB, Class, parentsPhone } = req.body
+    const { name, rollNo, DOB, Class, parentsPhone,section } = req.body;
     if (!name || !rollNo || !DOB || !Class|| !parentsPhone) {
         return res.json({
             message:"All fields are required"
@@ -16,6 +16,7 @@ router.post('/create-student', async (req, res) => {
     if (!user) {
         const user = new Student({
             name: name,
+            section,
             rollNo,
             DOB,
             Class,
