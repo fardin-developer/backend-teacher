@@ -8,7 +8,8 @@ router.get('/student-name',async(req,res)=>{
     let rollNo = req.query.rollNo;
     let studentClass = req.query.class
     let section = req.query.section
-   const student = await Student.findOne({rollNo,Class: studentClass})
+    // console.log(section);
+   const student = await Student.findOne({rollNo,Class: studentClass,section})
    if (student) {
     res.status(200).json(student)
    }else{

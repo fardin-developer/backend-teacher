@@ -42,6 +42,7 @@ router.post('/create-student', async (req, res) => {
 })
 router.post('/payment-update',async(req,res)=>{
    const {Class,rollNo,section} = req.body
+   console.log(section);
    const student = await Student.findOne({rollNo,Class,section});
    console.log(student);
    if (!student) {
