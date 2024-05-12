@@ -8,7 +8,7 @@ router.post('/create-user', (req, res) => {
   const now = moment().tz("Asia/Kolkata");
 const formattedDate = now.format("YYYY-MM-DDTHH:mm:ss.SSS") + 'Z';
 const formattedDateInDateObj = new Date(formattedDate);
-console.log(formattedDateInDateObj);
+// console.log(formattedDateInDateObj);
 
   const { name, baseSalary, password, confirmPassword, phone } = req.body
   

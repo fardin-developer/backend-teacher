@@ -11,7 +11,10 @@ const netAttendence = require('./routes/netAttendeces')
 const upgradeSalary = require('./routes/upgradeSalary');
 const holiday = require('./routes/holiday')
 const createStudent = require('./routes/createStudent')
-const getStudent = require('./routes/getStudent')
+const getStudent = require('./routes/getStudent');
+const submitAttendance = require('./routes/attendance/submitAttendance')
+const getAllstudent = require('./routes/getAllstudent')
+const presentStudents = require('./routes/attendance/presentToday')
 
 const rootUser = require('./routes/rootUser');
 TZ = 'Asia/Calcutta'
@@ -36,12 +39,15 @@ app.use('/', createUser)
 app.use('/', holiday)
 app.use('/', netAttendence);
 app.use('/',upgradeSalary);
+app.use('/',submitAttendance);
+app.use('/',getAllstudent);
+app.use('/',presentStudents);
 
 app.get('/new', (req, res) => {
   res.send("hello")
 })
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 800;
 
 // Listen on `port` and 0.0.0.0
 app.listen(port, "0.0.0.0", function () {

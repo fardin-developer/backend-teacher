@@ -9,6 +9,8 @@ const currentDate = moment().tz(indiaTimeZone);
 router.get('/salary', (req, res) => { })
 
 router.post('/salary', async (req, res) => {
+    console.log('ohkk');
+    
     let { month, year, name } = req.body
     month = Number(month)
     year = Number(year)
@@ -100,7 +102,8 @@ const getNumberOfPresentAttendances = async (userID, month, year) => {
                 $lte: endOfMonthValue
             }
         });
-        return presentAttendances; // Return the number of present attendances
+        console.log(presentAttendances.length);
+        return presentAttendances; 
     } catch (error) {
         console.error('Error fetching attendances:', error);
         throw error;
