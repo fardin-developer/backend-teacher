@@ -27,7 +27,7 @@ router.get('/present-today', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error fetching present students:', error);
+    // console.error('Error fetching present students:', error);
     res.status(500).json({
       error: 'An error occurred while fetching present students'
     });
