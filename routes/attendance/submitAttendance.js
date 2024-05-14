@@ -7,34 +7,41 @@ router.post('/submit-attendance', async (req, res) => {
   try {
     const presentArr = req.body.presentArr || []; // Default to an empty array if presentArr is undefined
 
+    console.log('Received presentArr:', presentArr);
+
     if (!Array.isArray(presentArr)) {
-      throw new Error('Invalid presentArr data');
+      console.error('Invalid presentArr data');
+      return res.status(400).json({ error: 'Invalid presentArr data' });
     }
 
-    const todayStart = moment().startOf('day'); // Get the start of today's date
-    const todayEnd = moment().endOf('day'); // Get the end of today's date
+    const todayStart = moment().startOf('day').toDate(); // Get the start of today's date
+    const todayEnd = moment().endOf('day').toDate(); // Get the end of today's date
 
-    const attendancePromise = presentArr.map(async (value) => {
-      // Check if attendance for today already exists for the user
-      const existingAttendance = await studentAttendance.findOne({
-        user: value.user,
-        date: { $gte: todayStart, $lte: todayEnd }
-      });
-
-      if (!existingAttendance) {
-        const student = new studentAttendance({
+    const bulkOps = presentArr.map(value => ({
+      updateOne: {
+        filter: {
           user: value.user,
-          name: value.name,
-          classnumber:value.classnumber,
-          section:value.section,
-          rollNo:value.rollNo,
-          count:value.count
-        });
-        await student.save();
+          date: { $gte: todayStart, $lte: todayEnd }
+        },
+        update: {
+          $setOnInsert: {
+            user: value.user,
+            name: value.name,
+            classnumber: value.classnumber,
+            section: value.section,
+            rollNo: value.rollNo,
+            count: value.count,
+          }
+        },
+        upsert: true
       }
-    });
+    }));
 
-    await Promise.all(attendancePromise);
+    // Perform bulk write with upsert
+    if (bulkOps.length > 0) {
+      const result = await studentAttendance.bulkWrite(bulkOps);
+      console.log('Bulk write result:', result);
+    }
 
     res.json({
       success: true,
@@ -42,10 +49,18 @@ router.post('/submit-attendance', async (req, res) => {
     });
   } catch (error) {
     console.error('Error submitting attendance:', error);
-    res.status(500).json({
-      error: 'An error occurred while submitting attendance'
-    });
+    if (error.code === 11000) {
+      res.status(409).json({
+        error: 'Duplicate attendance record detected'
+      });
+    } else {
+      res.status(500).json({
+        error: 'An error occurred while submitting attendance'
+      });
+    }
   }
 });
+
+
 
 module.exports = router;
