@@ -10,7 +10,7 @@ const formattedDate = now.format("YYYY-MM-DDTHH:mm:ss.SSS") + 'Z';
 const formattedDateInDateObj = new Date(formattedDate);
 // console.log(formattedDateInDateObj);
 
-  const { name, baseSalary, password, confirmPassword, phone } = req.body
+  const { name, baseSalary, password, confirmPassword, phone, url } = req.body
   
   const findByName = async name => {
     try {
@@ -21,8 +21,9 @@ const formattedDateInDateObj = new Date(formattedDate);
             name: name,
             phone: phone,
             password: password,
+            url:url,
             dateOfJoin:formattedDateInDateObj,
-            baseSalary: baseSalary
+            baseSalary: baseSalary,
           })
           user.save().then(() => {
             // console.log("user saved");

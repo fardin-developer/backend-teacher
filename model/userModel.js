@@ -13,6 +13,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  url: {
+    type: String,
+  },
   dateOfJoin: {
     type: Date,
     required: true,

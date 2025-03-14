@@ -15,6 +15,7 @@ const getStudent = require('./routes/getStudent');
 const submitAttendance = require('./routes/attendance/submitAttendance')
 const getAllstudent = require('./routes/getAllstudent')
 const presentStudents = require('./routes/attendance/presentToday')
+const dashboard = require('./routes/dashboard')
 
 const rootUser = require('./routes/rootUser');
 TZ = 'Asia/Calcutta'
@@ -27,7 +28,14 @@ const user = new User({
   name: 'john doe'
 })
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5001",
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(bodyParser.json());
 app.use('/admin',rootUser);
 
@@ -42,6 +50,7 @@ app.use('/',upgradeSalary);
 app.use('/',submitAttendance);
 app.use('/',getAllstudent);
 app.use('/',presentStudents);
+app.use('/', dashboard)
 
 app.get('/new', (req, res) => {
   res.send("hello")
